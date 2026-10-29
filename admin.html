@@ -77,6 +77,7 @@ h1{font-family:var(--display);font-weight:800;letter-spacing:-.02em;font-size:28
 .pill.paid{background:var(--done-bg);color:var(--done);border:1px solid var(--done)}
 .paybox{display:flex;gap:10px;align-items:center;margin-top:10px;font-weight:600;font-size:14px;cursor:pointer}
 .paybox input{width:18px;height:18px;accent-color:var(--accent)}
+.chip-label{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);align-self:center;margin-right:2px}
 .pill.New{background:var(--new-bg);color:var(--new)}
 .pill.In-progress{background:var(--prog-bg);color:var(--prog)}
 .pill.Done{background:var(--done-bg);color:var(--done)}
@@ -135,7 +136,8 @@ dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
       </div>
     </div>
     <div class="banner" id="demoBanner" hidden>Sample data. Add your Google Script link in config.js to see real submissions.</div>
-    <div class="counts" id="counts" style="margin-bottom:14px"></div>
+    <div class="counts" id="counts" style="margin-bottom:10px"></div>
+    <div class="counts" id="svcCounts" style="margin-bottom:14px"></div>
     <div class="desk" id="desk">
       <div class="list" id="list"></div>
       <div class="detail" id="detail"></div>
@@ -150,7 +152,7 @@ dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
   const DEMO = !SCRIPT_URL;
   const $ = id => document.getElementById(id);
   const STATUSES = ["New","In progress","Done"];
-  let items = [], filter = "All", current = null;
+  let items = [], filter = "All", svcFilter = "All", current = null;
 
   const SAMPLE = [
     { id:"A1B2C3D4", submitted:new Date(Date.now()-36e5*3).toISOString(), status:"New", paid:true, fileUrl:"", note:"",
@@ -204,14 +206,18 @@ dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
 
   function visible(){
     const q = $("q").value.trim().toLowerCase();
-    return items.filter(it => (filter === "All" || (filter === "Payment done" ? it.paid : it.status === filter)) &&
+    return items.filter(it => (filter === "All" || (filter === "Payment done" ? it.paid : it.status === filter)) && (svcFilter === "All" || svcOf(it) === svcFilter) &&
       (!q || [it.details.name, it.details.phone, it.details.role, it.details.city, it.id].join(" ").toLowerCase().includes(q)));
   }
 
+  function svcOf(it){ const s = String(it.details.service || ""); return s === "LinkedIn" ? "LinkedIn" : s.includes("LinkedIn") ? "Both" : "CV"; }
   function renderCounts(){
     const n = s => s === "All" ? items.length : s === "Payment done" ? items.filter(i => i.paid).length : items.filter(i => i.status === s).length;
     $("counts").innerHTML = ["All", "New", "Payment done", "In progress", "Done"].map(s => `<button type="button" class="chip" aria-pressed="${filter === s}" data-f="${s}">${s} <b>${n(s)}</b></button>`).join("");
     $("counts").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { filter = b.dataset.f; render(); }));
+    const m = s => s === "All" ? items.length : items.filter(i => svcOf(i) === s).length;
+    $("svcCounts").innerHTML = `<span class="chip-label">Service</span>` + ["All", "CV", "LinkedIn", "Both"].map(s => `<button type="button" class="chip" aria-pressed="${svcFilter === s}" data-s="${s}">${s} <b>${m(s)}</b></button>`).join("");
+    $("svcCounts").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { svcFilter = b.dataset.s; render(); }));
   }
 
   function renderList(){
