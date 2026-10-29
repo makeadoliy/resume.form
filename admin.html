@@ -212,10 +212,12 @@ dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
 
   function svcOf(it){ const s = String(it.details.service || ""); return s === "LinkedIn" ? "LinkedIn" : s.includes("LinkedIn") ? "Both" : "CV"; }
   function renderCounts(){
-    const n = s => s === "All" ? items.length : s === "Payment done" ? items.filter(i => i.paid).length : items.filter(i => i.status === s).length;
+    const statusOk = (i, f) => f === "All" || (f === "Payment done" ? i.paid : i.status === f);
+    const svcOk = (i, s) => s === "All" || svcOf(i) === s;
+    const n = f => items.filter(i => statusOk(i, f) && svcOk(i, svcFilter)).length;
     $("counts").innerHTML = ["All", "New", "Payment done", "In progress", "Done"].map(s => `<button type="button" class="chip" aria-pressed="${filter === s}" data-f="${s}">${s} <b>${n(s)}</b></button>`).join("");
     $("counts").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { filter = b.dataset.f; render(); }));
-    const m = s => s === "All" ? items.length : items.filter(i => svcOf(i) === s).length;
+    const m = s => items.filter(i => svcOk(i, s) && statusOk(i, filter)).length;
     $("svcCounts").innerHTML = `<span class="chip-label">Service</span>` + ["All", "CV", "LinkedIn", "Both"].map(s => `<button type="button" class="chip" aria-pressed="${svcFilter === s}" data-s="${s}">${s} <b>${m(s)}</b></button>`).join("");
     $("svcCounts").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { svcFilter = b.dataset.s; render(); }));
   }
