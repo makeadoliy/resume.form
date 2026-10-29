@@ -72,7 +72,11 @@ h1{font-family:var(--display);font-weight:800;letter-spacing:-.02em;font-size:28
 .item-role{color:var(--muted);font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .item-date{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
 .pill{font-size:11.5px;font-weight:600;border-radius:999px;padding:2px 9px;white-space:nowrap}
-.pill.svc{background:var(--prog-bg);color:var(--prog);margin-left:auto;margin-right:6px}
+.pill.svc{background:var(--prog-bg);color:var(--prog)}
+.tags{display:flex;gap:6px;align-items:center;flex:none}
+.pill.paid{background:var(--done-bg);color:var(--done);border:1px solid var(--done)}
+.paybox{display:flex;gap:10px;align-items:center;margin-top:10px;font-weight:600;font-size:14px;cursor:pointer}
+.paybox input{width:18px;height:18px;accent-color:var(--accent)}
 .pill.New{background:var(--new-bg);color:var(--new)}
 .pill.In-progress{background:var(--prog-bg);color:var(--prog)}
 .pill.Done{background:var(--done-bg);color:var(--done)}
@@ -149,8 +153,8 @@ dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
   let items = [], filter = "All", current = null;
 
   const SAMPLE = [
-    { id:"A1B2C3D4", submitted:new Date(Date.now()-36e5*3).toISOString(), status:"New", fileUrl:"", note:"",
-      details:{ name:"Sample: Fathima Rasha K", phone:"+91 90000 00001", email:"rasha.sample@example.com", city:"Edappal", links:"",
+    { id:"A1B2C3D4", submitted:new Date(Date.now()-36e5*3).toISOString(), status:"New", paid:true, fileUrl:"", note:"",
+      details:{ name:"Sample: Fathima Rasha K", dob:"1999-04-12", marital:"Single", nationality:"Indian", passport:"Available", service:"Resume + LinkedIn", phone:"+91 90000 00001", email:"rasha.sample@example.com", city:"Edappal", links:"",
         role:"Accounts Executive", where:"Kerala or UAE", jd:"B.Com with 2+ years in Tally Prime and GST returns. Bank reconciliation, vendor payments.",
         exp:[{company:"Malabar Traders, Kuttippuram", role:"Accounts Assistant", from:"June 2022", to:"Present", did:"Sales and purchase bills in Tally, monthly bank reconciliation, GST data for the auditor, petty cash.", numbers:"40+ invoices a day"}],
         edu:[{course:"B.Com Finance", college:"MES College, Ponnani", year:"2022", marks:"74%"}],
@@ -200,13 +204,13 @@ dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
 
   function visible(){
     const q = $("q").value.trim().toLowerCase();
-    return items.filter(it => (filter === "All" || it.status === filter) &&
+    return items.filter(it => (filter === "All" || (filter === "Payment done" ? it.paid : it.status === filter)) &&
       (!q || [it.details.name, it.details.phone, it.details.role, it.details.city, it.id].join(" ").toLowerCase().includes(q)));
   }
 
   function renderCounts(){
-    const n = s => s === "All" ? items.length : items.filter(i => i.status === s).length;
-    $("counts").innerHTML = ["All", ...STATUSES].map(s => `<button type="button" class="chip" aria-pressed="${filter === s}" data-f="${s}">${s} <b>${n(s)}</b></button>`).join("");
+    const n = s => s === "All" ? items.length : s === "Payment done" ? items.filter(i => i.paid).length : items.filter(i => i.status === s).length;
+    $("counts").innerHTML = ["All", "New", "Payment done", "In progress", "Done"].map(s => `<button type="button" class="chip" aria-pressed="${filter === s}" data-f="${s}">${s} <b>${n(s)}</b></button>`).join("");
     $("counts").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { filter = b.dataset.f; render(); }));
   }
 
@@ -216,13 +220,14 @@ dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
     if (!v.length){ $("list").innerHTML = `<div class="empty">Nothing matches.</div>`; return; }
     $("list").innerHTML = v.map(it => `
       <button type="button" class="item" data-id="${esc(it.id)}" aria-current="${it.id === current}">
-        <div class="item-row"><span class="item-name">${esc(it.details.name || "No name")}</span>${String(it.details.service || "").includes("LinkedIn") ? `<span class="pill svc">+ LinkedIn</span>` : ""}<span class="pill ${cls(it.status)}">${esc(it.status)}</span></div>
+        <div class="item-row"><span class="item-name">${esc(it.details.name || "No name")}</span><span class="tags">${it.status !== "Done" && String(it.details.service || "").includes("LinkedIn") ? `<span class="pill svc">+ LinkedIn</span>` : ""}${it.status !== "Done" && it.paid ? `<span class="pill paid">₹ Paid</span>` : ""}<span class="pill ${cls(it.status)}">${esc(it.status)}</span></span></div>
         <div class="item-role">${esc(it.details.role || "")}${it.details.city ? " · " + esc(it.details.city) : ""}</div>
         <div class="item-date">${esc(fmt(it.submitted))}</div>
       </button>`).join("");
     $("list").querySelectorAll(".item").forEach(b => b.addEventListener("click", () => { current = b.dataset.id; $("desk").classList.add("showing"); render(); window.scrollTo(0, 0); }));
   }
 
+  const dmy = v => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v || ""); return m ? m[3] + "/" + m[2] + "/" + m[1] : (v || ""); };
   function row(label, val){ return val ? `<dt>${esc(label)}</dt><dd>${esc(val)}</dd>` : ""; }
 
   function renderDetail(){
@@ -250,6 +255,7 @@ dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
         </div>
       </div>
       <div class="block"><h3>Contact</h3><dl>${row("Phone", d.phone)}${row("Email", d.email)}${row("City", d.city)}${row("LinkedIn / portfolio", d.links)}</dl></div>
+      ${(d.dob || d.marital || d.nationality || d.passport) ? `<div class="block"><h3>Personal details</h3><dl>${row("Date of birth", dmy(d.dob))}${row("Marital status", d.marital)}${row("Nationality", d.nationality)}${row("Passport", d.passport)}${row("Passport expiry", dmy(d.passportExp))}</dl></div>` : ""}
       <div class="block"><h3>Target job</h3><dl>${row("Service", d.service || "Resume")}${row("Role", d.role)}${row("Location", d.where)}</dl>${d.jd ? `<div class="jd">${esc(d.jd)}</div>` : ""}</div>
       ${String(d.service || "").includes("LinkedIn") ? `<div class="block"><h3>LinkedIn add-on</h3><dl>${row("Goal", d.liGoal)}${row("Industry", d.liIndustry)}${row("Known for", d.liKnown)}${row("More", d.liMore)}</dl></div>` : ""}
       <div class="block"><h3>Experience</h3>${exp || `<div class="none">Fresher or not filled in.</div>`}</div>
@@ -258,7 +264,8 @@ dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
       ${extras ? `<div class="block"><h3>Extras</h3><dl>${extras}</dl></div>` : ""}
       <div class="manage">
         <div class="block"><h3>Status</h3>
-          <select id="status">${STATUSES.map(s => `<option ${s === it.status ? "selected" : ""}>${s}</option>`).join("")}</select></div>
+          <select id="status">${STATUSES.map(s => `<option ${s === it.status ? "selected" : ""}>${s}</option>`).join("")}</select>
+          <label class="paybox" for="paid"><input type="checkbox" id="paid" ${it.paid ? "checked" : ""}><span>Payment done</span></label></div>
         <div class="block"><h3>Your note</h3>
           <textarea id="note" placeholder="e.g. Draft sent, waiting for photo">${esc(it.note || "")}</textarea>
           <div style="display:flex;gap:10px;align-items:center"><button type="button" class="btn btn-soft" id="saveNote">Save note</button><span class="saved" id="saved" aria-live="polite"></span></div></div>
@@ -266,6 +273,7 @@ dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
 
     $("back").addEventListener("click", () => { $("desk").classList.remove("showing"); current = null; render(); });
     $("status").addEventListener("change", e => update(it, { status: e.target.value }));
+    $("paid").addEventListener("change", e => update(it, { paid: e.target.checked }));
     $("saveNote").addEventListener("click", () => update(it, { note: $("note").value }));
     $("copyAll").addEventListener("click", () => {
       const text = briefText(d);
@@ -276,7 +284,7 @@ dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
 
   function briefText(d){
     const L = (k, v) => v ? k + ": " + v + "\n" : "";
-    let t = L("Name", d.name) + L("Phone", d.phone) + L("Email", d.email) + L("City", d.city) + L("Links", d.links) +
+    let t = L("Name", d.name) + L("Phone", d.phone) + L("Email", d.email) + L("City", d.city) + L("Date of birth", dmy(d.dob)) + L("Marital status", d.marital) + L("Nationality", d.nationality) + L("Passport", d.passport) + L("Passport expiry", dmy(d.passportExp)) + L("Links", d.links) +
       "\nTarget: " + (d.role || "") + (d.where ? " (" + d.where + ")" : "") + "\n" + (d.jd ? "Job post:\n" + d.jd + "\n" : "");
     (d.exp || []).forEach(e => { t += `\nJob: ${e.role} at ${e.company} (${e.from} to ${e.to})\n` + L("Work", e.did) + L("Numbers", e.numbers); });
     (d.edu || []).forEach(e => { t += `\nEducation: ${e.course}, ${e.college}${e.year ? ", " + e.year : ""}${e.marks ? " (" + e.marks + ")" : ""}`; });
@@ -290,7 +298,7 @@ dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
     if (DEMO){ $("saved").textContent = "Saved (sample data only)."; return; }
     $("saved").textContent = "Saving…";
     try {
-      const out = await api({ action:"update", id: it.id, status: it.status, note: it.note });
+      const out = await api({ action:"update", id: it.id, status: it.status, note: it.note, paid: !!it.paid });
       $("saved").textContent = out.ok ? "Saved to your sheet." : "Couldn't save: " + out.error;
     } catch(e){ $("saved").textContent = "Couldn't save. Check your internet."; }
   }

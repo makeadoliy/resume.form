@@ -108,6 +108,10 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding-top:24px}
         <div class="field"><label for="phone">Phone / WhatsApp <span class="req">*</span></label><input id="phone" type="tel" autocomplete="tel" placeholder="+91 98xxx xxxxx"></div>
         <div class="field"><label for="email">Email</label><input id="email" type="email" autocomplete="email" placeholder="name@gmail.com"></div>
         <div class="field"><label for="city">City / town</label><input id="city" placeholder="e.g. Edappal, Malappuram"></div>
+        <div class="field"><label for="dob">Date of birth</label><input id="dob" type="date"></div>
+        <div class="field"><label for="marital">Marital status</label><select id="marital"><option value="">Choose one</option><option>Single</option><option>Married</option><option>Divorced</option><option>Widowed</option></select></div>
+        <div class="field"><label for="nationality">Nationality</label><input id="nationality" placeholder="e.g. Indian"></div>
+        <div class="field"><label for="passport">Passport</label><select id="passport"><option value="">Choose one</option><option>Available</option><option>Not available</option></select></div>
         <div class="field full"><label for="links">LinkedIn or portfolio <span class="opt">(optional)</span></label><input id="links" placeholder="linkedin.com/in/yourname"></div>
       </div>
     </section>
@@ -169,7 +173,7 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding-top:24px}
       <p class="sec-note">Optional add-on. We'll also write your LinkedIn headline, About section, experience and skills from the details above.</p>
       <label class="li-toggle" for="wantLi"><input type="checkbox" id="wantLi"><span>Yes, add LinkedIn profile building</span></label>
       <div class="grid" id="liFields" hidden>
-        <div class="field"><label for="liGoal">What do you want from LinkedIn?</label><select id="liGoal"><option value="">Choose one</option><option>Get a job</option><option>For my business or freelance work</option><option>Build my personal brand</option><option>Grow my network</option></select></div>
+        <div class="field"><label for="liGoal">What do you want from LinkedIn?</label><select id="liGoal"><option value="">Choose one</option><option>Get a job</option><option>Get clients for my business or freelance work</option><option>Build my personal brand</option><option>Grow my network</option></select></div>
         <div class="field"><label for="liIndustry">Industry or field</label><input id="liIndustry" placeholder="e.g. Marketing, Construction, Healthcare"></div>
         <div class="field full"><label for="liKnown">What you want to be known for</label><input id="liKnown" placeholder="e.g. Accounts professional with GST and Tally expertise"></div>
         <div class="field full"><label for="liMore">Anything else for LinkedIn <span class="opt">(who you want to reach, companies you like)</span></label><textarea id="liMore" rows="3" placeholder="e.g. I want recruiters in UAE to find me for accounts jobs"></textarea></div>
@@ -201,7 +205,7 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding-top:24px}
   const KEY = "adoliy-resume-draft-v1";
   const MAX = 5 * 1024 * 1024;
   const $ = id => document.getElementById(id);
-  const simple = ["name","phone","email","city","links","role","where","jd","tools","skills","langs","certs","projects","awards","notes","liGoal","liIndustry","liKnown","liMore"];
+  const simple = ["name","phone","email","city","dob","marital","nationality","passport","links","role","where","jd","tools","skills","langs","certs","projects","awards","notes","liGoal","liIndustry","liKnown","liMore"];
   let expN = 0, eduN = 0, chosenFile = null;
 
   function expHTML(i){ return `
