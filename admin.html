@@ -77,6 +77,7 @@ h1{font-family:var(--display);font-weight:800;letter-spacing:-.02em;font-size:28
 .pill.paid{background:var(--done-bg);color:var(--done);border:1px solid var(--done)}
 .paybox{display:flex;gap:10px;align-items:center;margin-top:10px;font-weight:600;font-size:14px;cursor:pointer}
 .paybox input{width:18px;height:18px;accent-color:var(--accent)}
+.filters{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px 16px;margin-bottom:14px}
 .chip-label{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);align-self:center;margin-right:2px}
 .pill.New{background:var(--new-bg);color:var(--new)}
 .pill.In-progress{background:var(--prog-bg);color:var(--prog)}
@@ -136,8 +137,7 @@ dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
       </div>
     </div>
     <div class="banner" id="demoBanner" hidden>Sample data. Add your Google Script link in config.js to see real submissions.</div>
-    <div class="counts" id="counts" style="margin-bottom:10px"></div>
-    <div class="counts" id="svcCounts" style="margin-bottom:14px"></div>
+    <div class="filters"><div class="counts" id="counts"></div><div class="counts" id="svcCounts"></div></div>
     <div class="desk" id="desk">
       <div class="list" id="list"></div>
       <div class="detail" id="detail"></div>
