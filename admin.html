@@ -264,7 +264,7 @@ dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
       </div>
       <div class="block"><h3>Contact</h3><dl>${row("Phone", d.phone)}${row("Email", d.email)}${row("City", d.city)}${row("LinkedIn / portfolio", d.links)}</dl></div>
       ${(d.dob || d.marital || d.nationality || d.passport) ? `<div class="block"><h3>Personal details</h3><dl>${row("Date of birth", dmy(d.dob))}${row("Marital status", d.marital)}${row("Nationality", d.nationality)}${row("Passport", d.passport)}${row("Passport expiry", dmy(d.passportExp))}</dl></div>` : ""}
-      <div class="block"><h3>Target job</h3><dl>${row("Service", d.service || "Resume")}${row("Role", d.role)}${row("Location", d.where)}</dl>${d.jd ? `<div class="jd">${esc(d.jd)}</div>` : ""}</div>
+      <div class="block"><h3>Target job</h3><dl>${row("Service", d.service || "Resume")}${row("Amount", d.amount ? "₹" + d.amount : "")}${row("Role", d.role)}${row("Location", d.where)}</dl>${d.jd ? `<div class="jd">${esc(d.jd)}</div>` : ""}</div>
       ${String(d.service || "").includes("LinkedIn") ? `<div class="block"><h3>LinkedIn add-on</h3><dl>${row("Goal", d.liGoal)}${row("Industry", d.liIndustry)}${row("Known for", d.liKnown)}${row("More", d.liMore)}</dl></div>` : ""}
       <div class="block"><h3>Experience</h3>${exp || `<div class="none">Fresher or not filled in.</div>`}</div>
       <div class="block"><h3>Education</h3>${edu || `<div class="none">Not filled in.</div>`}</div>

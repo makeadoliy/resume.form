@@ -47,6 +47,26 @@ h2{font-family:var(--display);font-weight:700;font-size:22px;margin:0;text-wrap:
 .full{grid-column:1/-1}
 select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:10px 12px;width:100%;min-width:0}
 .li-card{border:1.5px solid var(--accent)}
+.svc-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:620px){.svc-grid{grid-template-columns:1fr}}
+.svc-opt{position:relative;display:grid;gap:2px;border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;cursor:pointer;background:var(--bg)}
+.svc-opt input{position:absolute;opacity:0;pointer-events:none}
+.svc-opt:has(input:checked){border-color:var(--accent);background:var(--soft);box-shadow:inset 0 0 0 1px var(--accent)}
+.svc-opt:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.svc-name{font-weight:700;font-size:15px}
+.svc-price{font-weight:800;font-size:24px;color:var(--accent)}
+.svc-desc{font-size:13px;color:var(--muted)}
+.pay-card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 20px;display:grid;gap:6px}
+.pay-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-weight:600}
+.pay-amt{font-size:32px;font-weight:800;color:var(--accent)}
+.pay-btn{text-align:center;text-decoration:none;font-size:17px;padding:15px 22px}
+.btn-soft{background:var(--soft);color:var(--ink);text-align:center;text-decoration:none}
+.pay-alt{display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px}
+.upi-qr{background:#fff;padding:8px;border-radius:10px;flex:none;width:156px;height:156px;box-sizing:content-box}
+.upi-qr img,.upi-qr canvas{display:block;width:156px;height:156px}
+.pay-alt-text{display:grid;gap:6px;font-size:14px;min-width:0;flex:1 1 200px}
+.upi-id{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.upi-id code{font-size:15px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 10px;overflow-wrap:anywhere}
 .li-toggle{display:flex;gap:12px;align-items:center;background:var(--soft);border-radius:11px;padding:14px 16px;cursor:pointer;font-size:15px}
 .li-toggle input{width:20px;height:20px;accent-color:var(--accent);flex:none}
 .li-photo{margin:0;font-size:14px;color:var(--muted)}
@@ -100,6 +120,15 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding-top:24px}
 
   <form id="f" novalidate>
     <div class="trap" aria-hidden="true"><label for="website">Website</label><input id="website" tabindex="-1" autocomplete="off"></div>
+
+    <section>
+      <div class="sec-head"><span class="num">00</span><h2>Choose your service</h2></div>
+      <div class="svc-grid" role="radiogroup" aria-label="Service">
+        <label class="svc-opt" for="svcCv"><input type="radio" name="svc" id="svcCv" value="Resume" checked><span class="svc-name">CV only</span><span class="svc-price">₹300</span><span class="svc-desc">ATS-friendly one-page resume</span></label>
+        <label class="svc-opt" for="svcLi"><input type="radio" name="svc" id="svcLi" value="LinkedIn"><span class="svc-name">LinkedIn only</span><span class="svc-price">₹500</span><span class="svc-desc">Headline, About, experience and skills</span></label>
+        <label class="svc-opt" for="svcBoth"><input type="radio" name="svc" id="svcBoth" value="Resume + LinkedIn"><span class="svc-name">CV + LinkedIn</span><span class="svc-price">₹800</span><span class="svc-desc">Both, written to match each other</span></label>
+      </div>
+    </section>
 
     <section>
       <div class="sec-head"><span class="num">01</span><h2>Your details</h2></div>
@@ -168,11 +197,10 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding-top:24px}
         <div class="field full"><label for="notes">Anything else we should know</label><textarea id="notes" rows="2" placeholder="Career gap, career change, things you'd rather leave out"></textarea></div>
       </div>
     </section>
-    <section class="li-card" id="liSection">
-      <div class="sec-head"><span class="num">08</span><h2>Want a LinkedIn profile too?</h2></div>
-      <p class="sec-note">Optional add-on. We'll also write your LinkedIn headline, About section, experience and skills from the details above.</p>
-      <label class="li-toggle" for="wantLi"><input type="checkbox" id="wantLi"><span>Yes, add LinkedIn profile building</span></label>
-      <div class="grid" id="liFields" hidden>
+    <section class="li-card" id="liSection" hidden>
+      <div class="sec-head"><span class="num">08</span><h2>Your LinkedIn</h2></div>
+      <p class="sec-note">We'll write your LinkedIn headline, About section, experience and skills from the details above.</p>
+      <div class="grid" id="liFields">
         <div class="field"><label for="liGoal">What do you want from LinkedIn?</label><select id="liGoal"><option value="">Choose one</option><option>Get a job</option><option>Get clients for my business or freelance work</option><option>Build my personal brand</option><option>Grow my network</option></select></div>
         <div class="field"><label for="liIndustry">Industry or field</label><input id="liIndustry" placeholder="e.g. Marketing, Construction, Healthcare"></div>
         <div class="field full"><label for="liKnown">What you want to be known for</label><input id="liKnown" placeholder="e.g. Accounts professional with GST and Tally expertise"></div>
@@ -185,11 +213,22 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding-top:24px}
 </div>
 
 <div class="done" id="doneView" hidden>
-  <div class="tick" aria-hidden="true">✓</div>
-  <h1>Got it. We'll be in touch.</h1>
-  <p class="lede">Opening WhatsApp… Tap send there so we know it's you. If it didn't open, use the button below.</p>
-  <p class="ref" id="refLine"></p>
-  <a class="btn" id="waLink" href="https://wa.me/918921186858" target="_blank" rel="noopener" style="justify-self:start;text-decoration:none">Open WhatsApp</a>
+  <h1>Details received. Pay to confirm.</h1>
+  <div class="pay-card">
+    <div class="pay-row"><span id="paySvc">CV only</span><span class="pay-amt" id="payAmt">₹300</span></div>
+    <div class="ref" id="refLine"></div>
+  </div>
+  <a class="btn pay-btn" id="upiBtn" href="#">Pay with UPI</a>
+  <div class="pay-alt">
+    <div id="upiQr" class="upi-qr" aria-label="UPI payment QR code"></div>
+    <div class="pay-alt-text">
+      <b>Paying from a laptop or another phone?</b>
+      <span>Scan this with GPay, PhonePe or Paytm. Or pay to this UPI ID:</span>
+      <div class="upi-id"><code id="upiId">sidandotzain@oksbi</code><button type="button" class="link-btn" id="copyUpi">Copy</button></div>
+    </div>
+  </div>
+  <a class="btn btn-soft" id="waLink" href="https://wa.me/918921186858" target="_blank" rel="noopener">I've paid · Send confirmation on WhatsApp</a>
+  <p class="lede" style="font-size:14px">After paying, send the payment screenshot in the same WhatsApp chat. We start once the payment is confirmed.</p>
   <button type="button" class="link-btn" id="again" style="justify-self:start">Submit for someone else</button>
 </div>
 
@@ -199,6 +238,7 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding-top:24px}
 </div></div>
 
 <script src="config.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 (function(){
   const SCRIPT_URL = (window.ADOLIY_SCRIPT_URL || "").trim();
@@ -257,13 +297,21 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding-top:24px}
     s.exp = rows("#expList"); s.edu = rows("#eduList");
     return s;
   }
-  function syncLi(){ $("liFields").hidden = !$("wantLi").checked; }
-  $("wantLi").addEventListener("change", () => { syncLi(); save(); });
-  function save(){ try { const s = collect(); s.wantLi = $("wantLi").checked; localStorage.setItem(KEY, JSON.stringify(s)); } catch(e){} }
+  const PRICES = { "Resume": 300, "LinkedIn": 500, "Resume + LinkedIn": 800 };
+  const LABELS = { "Resume": "CV only", "LinkedIn": "LinkedIn only", "Resume + LinkedIn": "CV + LinkedIn" };
+  const UPI_ID = "sidandotzain@oksbi";
+  const svcVal = () => (document.querySelector('input[name="svc"]:checked') || {}).value || "Resume";
+  function syncLi(){
+    const s = svcVal();
+    $("liSection").hidden = !s.includes("LinkedIn");
+    $("submitBtn").textContent = "Submit · ₹" + PRICES[s];
+  }
+  document.querySelectorAll('input[name="svc"]').forEach(r => r.addEventListener("change", () => { syncLi(); save(); }));
+  function save(){ try { const s = collect(); s.svc = svcVal(); localStorage.setItem(KEY, JSON.stringify(s)); } catch(e){} }
   function clearDraft(){ try { localStorage.removeItem(KEY); } catch(e){} }
   function load(){
     let d = null; try { d = JSON.parse(localStorage.getItem(KEY) || "null"); } catch(e){}
-    if (d){ simple.forEach(k => { if (d[k]) $(k).value = d[k]; }); $("wantLi").checked = !!d.wantLi; syncLi(); }
+    if (d){ simple.forEach(k => { if (d[k]) $(k).value = d[k]; }); const r = d.svc && document.querySelector('input[name="svc"][value="' + d.svc + '"]'); if (r) r.checked = true; }
     (d && d.exp && d.exp.length ? d.exp : [null]).forEach(x => addExp(x));
     (d && d.edu && d.edu.length ? d.edu : [null]).forEach(x => addEdu(x));
   }
@@ -308,32 +356,46 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding-top:24px}
     try {
       const data = collect();
       data.website = $("website").value;
-      const wantLi = $("wantLi").checked;
-      data.service = wantLi ? "Resume + LinkedIn" : "Resume";
-      if (!wantLi) ["liGoal","liIndustry","liKnown","liMore"].forEach(k => delete data[k]);
+      const svc = svcVal();
+      data.service = svc;
+      data.amount = PRICES[svc];
+      if (!svc.includes("LinkedIn")) ["liGoal","liIndustry","liKnown","liMore"].forEach(k => delete data[k]);
       if (chosenFile) data.file = { name: chosenFile.name, type: chosenFile.type, b64: await readB64(chosenFile) };
       const r = await fetch(SCRIPT_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "submit", data }) });
       const out = await r.json();
       if (!out.ok) throw new Error(out.error || "failed");
       clearDraft();
-      const waText = (wantLi ? "Resume + LinkedIn application" : "Resume application") + "\nName: " + data.name + "\nRef: " + (out.id || "");
-      const waUrl = "https://wa.me/918921186858?text=" + encodeURIComponent(waText);
-      $("waLink").href = waUrl;
-      $("refLine").textContent = "Reference: " + (out.id || "");
-      setTimeout(() => { window.location.href = waUrl; }, 600);
+      const ref = out.id || "";
+      const amt = PRICES[svc];
+      const waText = LABELS[svc] + " application\nName: " + data.name + "\nRef: " + ref + "\nAmount: ₹" + amt + " paid via UPI";
+      $("waLink").href = "https://wa.me/918921186858?text=" + encodeURIComponent(waText);
+      const upi = "upi://pay?pa=" + encodeURIComponent(UPI_ID) + "&pn=" + encodeURIComponent("Adoliy") + "&am=" + amt + ".00&cu=INR&tn=" + encodeURIComponent("Adoliy " + ref);
+      $("upiBtn").href = upi;
+      $("upiBtn").textContent = "Pay ₹" + amt + " with UPI";
+      $("paySvc").textContent = LABELS[svc];
+      $("payAmt").textContent = "₹" + amt;
+      $("refLine").textContent = "Reference: " + ref + " · added to the payment note";
+      $("upiQr").innerHTML = "";
+      if (window.QRCode) { try { new QRCode($("upiQr"), { text: upi, width: 156, height: 156, correctLevel: QRCode.CorrectLevel.M }); } catch(e){} }
+      else { $("upiQr").hidden = true; }
       $("formView").hidden = true; $("bar").hidden = true; $("doneView").hidden = false;
       window.scrollTo(0, 0);
     } catch (e) {
       const msg = String(e.message || e);
       setStatus(msg === "file_too_big" ? "That file is too big. Try one under 5 MB." : "Couldn't send. Check your internet and tap Submit again.", true);
     } finally {
-      btn.disabled = false; btn.textContent = "Submit details";
+      btn.disabled = false; syncLi();
     }
   });
 
   $("again").addEventListener("click", () => location.reload());
+  $("copyUpi").addEventListener("click", () => {
+    const done = () => { $("copyUpi").textContent = "Copied"; };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(UPI_ID).then(done, () => { const r = document.createRange(); r.selectNodeContents($("upiId")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); });
+  });
   document.addEventListener("input", e => { if (e.target.classList) e.target.classList.remove("bad"); if (e.target.id !== "file") save(); });
   load();
+  syncLi();
 })();
 </script>
 <!--BODY-END-->
