@@ -213,7 +213,7 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding-top:24px}
 </div>
 
 <div class="done" id="doneView" hidden>
-  <h1>Details received. Pay to confirm.</h1>
+  <h1>Complete your payment</h1>
   <div class="pay-card">
     <div class="pay-row"><span id="paySvc">CV only</span><span class="pay-amt" id="payAmt">₹300</span></div>
     <div class="ref" id="refLine"></div>
@@ -227,8 +227,7 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding-top:24px}
       <div class="upi-id"><code id="upiId">sidandotzain@oksbi</code><button type="button" class="link-btn" id="copyUpi">Copy</button></div>
     </div>
   </div>
-  <a class="btn btn-soft" id="waLink" href="https://wa.me/918921186858" target="_blank" rel="noopener">I've paid · Send confirmation on WhatsApp</a>
-  <p class="lede" style="font-size:14px">After paying, send the payment screenshot in the same WhatsApp chat. We start once the payment is confirmed.</p>
+  <p class="lede" style="font-size:14px">Once your payment reaches us, we'll confirm on WhatsApp and start on your resume. Questions? WhatsApp +91 89211 86858.</p>
   <button type="button" class="link-btn" id="again" style="justify-self:start">Submit for someone else</button>
 </div>
 
@@ -304,7 +303,7 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding-top:24px}
   function syncLi(){
     const s = svcVal();
     $("liSection").hidden = !s.includes("LinkedIn");
-    $("submitBtn").textContent = "Submit · ₹" + PRICES[s];
+    $("submitBtn").textContent = "Pay ₹" + PRICES[s];
   }
   document.querySelectorAll('input[name="svc"]').forEach(r => r.addEventListener("change", () => { syncLi(); save(); }));
   function save(){ try { const s = collect(); s.svc = svcVal(); localStorage.setItem(KEY, JSON.stringify(s)); } catch(e){} }
@@ -352,7 +351,7 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding-top:24px}
   btn.addEventListener("click", async () => {
     if (!validate()) return;
     if (!SCRIPT_URL){ setStatus("This form isn't connected yet. Please message Adoliy on WhatsApp instead.", true); return; }
-    btn.disabled = true; btn.textContent = "Sending…"; setStatus(chosenFile ? "Uploading your details and file…" : "Sending your details…");
+    btn.disabled = true; btn.textContent = "Opening payment…"; setStatus(chosenFile ? "Uploading your details and file…" : "Sending your details…");
     try {
       const data = collect();
       data.website = $("website").value;
@@ -367,8 +366,6 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding-top:24px}
       clearDraft();
       const ref = out.id || "";
       const amt = PRICES[svc];
-      const waText = LABELS[svc] + " application\nName: " + data.name + "\nRef: " + ref + "\nAmount: ₹" + amt + " paid via UPI";
-      $("waLink").href = "https://wa.me/918921186858?text=" + encodeURIComponent(waText);
       const upi = "upi://pay?pa=" + encodeURIComponent(UPI_ID) + "&pn=" + encodeURIComponent("Adoliy") + "&am=" + amt + ".00&cu=INR&tn=" + encodeURIComponent("Adoliy " + ref);
       $("upiBtn").href = upi;
       $("upiBtn").textContent = "Pay ₹" + amt + " with UPI";
@@ -378,6 +375,7 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding-top:24px}
       $("upiQr").innerHTML = "";
       if (window.QRCode) { try { new QRCode($("upiQr"), { text: upi, width: 156, height: 156, correctLevel: QRCode.CorrectLevel.M }); } catch(e){} }
       else { $("upiQr").hidden = true; }
+      if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) setTimeout(() => { window.location.href = upi; }, 300);
       $("formView").hidden = true; $("bar").hidden = true; $("doneView").hidden = false;
       window.scrollTo(0, 0);
     } catch (e) {
