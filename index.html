@@ -227,7 +227,7 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding-top:24px}
       <div class="upi-id"><code id="upiId">sidandotzain@oksbi</code><button type="button" class="link-btn" id="copyUpi">Copy</button></div>
     </div>
   </div>
-  <a class="btn btn-soft" id="waLink" href="https://wa.me/918921186858" target="_blank" rel="noopener">Paying by cash or have a doubt? Chat on WhatsApp</a>
+  <a class="btn btn-soft" id="waLink" href="https://wa.me/919048186858" target="_blank" rel="noopener">Paying by cash or have a doubt? Chat on WhatsApp</a>
   <p class="lede" style="font-size:14px">Once your payment reaches us, we'll confirm on WhatsApp and start on your resume.</p>
   <button type="button" class="link-btn" id="again" style="justify-self:start">Submit for someone else</button>
 </div>
@@ -370,7 +370,7 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding-top:24px}
       const upi = "upi://pay?pa=" + encodeURIComponent(UPI_ID) + "&pn=" + encodeURIComponent("Adoliy") + "&am=" + amt + ".00&cu=INR&tn=" + encodeURIComponent("Adoliy " + ref);
       $("upiBtn").href = upi;
       const waText = LABELS[svc] + " request\nName: " + data.name + "\nRef: " + ref + "\nAmount: ₹" + amt;
-      $("waLink").href = "https://wa.me/918921186858?text=" + encodeURIComponent(waText);
+      $("waLink").href = "https://wa.me/919048186858?text=" + encodeURIComponent(waText);
       $("upiBtn").textContent = "Pay ₹" + amt + " with UPI";
       $("paySvc").textContent = LABELS[svc];
       $("payAmt").textContent = "₹" + amt;
